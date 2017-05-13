@@ -1,9 +1,13 @@
 lib := libcu.so
+installdir := ~
+libdir := $(installdir)/lib
+incdir := $(installdir)/include
 sources := $(wildcard *.c)
+hdrs := $(wildcard *.h)
 objects = $(sources:.c=.o)
 CFLAGS += -Werror -Wfatal-errors
 CFLAGS += -std=c99
-CFLAGS += -fPIC
+CFLAGS += -shared -fPIC
 
 ifeq ($(OPTIMIZE), true)
 	CFLAGS += -O2
@@ -13,8 +17,15 @@ endif
 
 all: $(lib)
 
+$(libdir) $(incdir):
+	mkdir -p $@
+
+install: $(lib) $(libdir) $(incdir)
+	cp $(lib) $(libdir)
+	cp $(hdrs) $(incdir)
+
 $(lib): $(objects) Makefile
-	$(CC) -shared $(CFLAGS) -o $@ $(objects) -Wl,-rpath=/usr/local/lib
+	$(CC) $(CFLAGS) -o $@ $(objects) -Wl,-rpath=/usr/local/lib
 
 clean:
 	rm -f $(lib) $(objects)
