@@ -40,4 +40,9 @@ unsigned int mem_get_refs(void *ptr);
  */
 void mem_set_err_handler(void (*handler) (int size));
 
+/**
+ * Return a string describing the last error.
+ */
+const char *mem_get_error(void);
+
 #endif
