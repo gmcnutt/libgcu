@@ -1,4 +1,4 @@
-# Gordon's C Utilities (libgcu)
+# Gmcnutt's C Utilities (libgcu)
 
 Common re-usable C utility functions that I like to use in my C projects.
 
