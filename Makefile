@@ -1,4 +1,4 @@
-lib := libcu.so
+lib := libgcu.so
 installdir := ~
 libdir := $(installdir)/lib
 incdir := $(installdir)/include
