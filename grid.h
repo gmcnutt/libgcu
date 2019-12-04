@@ -16,25 +16,19 @@
 typedef struct grid grid_t;
 
 /**
- * Create a grid of the given max dimensions.
+ * Create a grid of the given max dimensions. Use mem_deref() to destroy.
  */
 grid_t *grid_alloc(int width, int height);
-
-/**
- * Ref/deref a grid.
- */
-void grid_ref(grid_t * grid);
-void grid_deref(grid_t * grid);
-
-/**
- * Put `userdata` (a pointer to anything) at (x, y) and ref it.
- */
-void grid_put(grid_t * grid, int x, int y, void *obj);
 
 /**
  * Get whatever is at (x, y). Returns NULL if nothing is there.
  */
 void *grid_get(grid_t * grid, int x, int y);
+
+/**
+ * Put `userdata` (a pointer to anything) at (x, y) and ref it.
+ */
+void grid_put(grid_t * grid, int x, int y, void *obj);
 
 /**
  * Remove whatever is at (x, y) and deref it.

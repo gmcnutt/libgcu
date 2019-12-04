@@ -1,5 +1,6 @@
+#include <assert.h>
 #include <gcu.h>
-#include <grid.h>
+
 
 int main(int argc, char **argv)
 {
@@ -10,9 +11,12 @@ int main(int argc, char **argv)
 
         grid_t *grid = grid_alloc(1, 1);
         grid_put(grid, 0, 0, str);
-        grid_deref(grid);
-        
-        str_deref(str);
+        void *ptr = grid_get(grid, 0, 0);
+        assert(ptr==str);
+        grid_remove(grid, 0, 0);
+        mem_deref(grid);
+
+        mem_deref(str);
 
         return 0;
 }

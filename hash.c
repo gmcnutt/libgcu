@@ -13,6 +13,7 @@
 typedef struct {
         struct list list;
         void *userdata;
+        int key;
 } hashnode_t;
 
 struct hash {
@@ -34,12 +35,32 @@ static void hashnode_fin(void *ptr)
         mem_deref(node->userdata);
 }
 
-static hashnode_t *hashnode_alloc(void *userdata)
+static hashnode_t *hashnode_alloc(void *userdata, int key)
 {
         hashnode_t *node = mem_alloc(sizeof (*node), hashnode_fin);
         node->userdata = userdata;
         mem_ref(userdata);
+        node->key = key;
         return node;
+}
+
+static hashnode_t *hash_get_node(hash_t * hash, int key)
+{
+        int i = key % hash->n_buckets;
+        struct list *elem;
+        list_for_each(&hash->buckets[i], elem) {
+                hashnode_t *node = (hashnode_t *) elem;
+                if (node->key == key) {
+                        return node;
+                }
+        }
+        return NULL;
+}
+
+static inline void hash_remove_node(hashnode_t * node)
+{
+        list_remove(&node->list);
+        mem_deref(node);
 }
 
 hash_t *hash_alloc(int size)
@@ -66,8 +87,7 @@ void hash_clear(hash_t * hash)
                 while (next != head) {
                         hashnode_t *node = (hashnode_t *) next;
                         next = next->next;
-                        list_remove(&node->list);
-                        mem_deref(node);
+                        hash_remove_node(node);
                 }
         }
 }
@@ -75,6 +95,23 @@ void hash_clear(hash_t * hash)
 void hash_insert(hash_t * hash, int key, void *userdata)
 {
         int i = key % hash->n_buckets;
-        hashnode_t *node = hashnode_alloc(userdata);
+        hashnode_t *node = hashnode_alloc(userdata, key);
         list_add(&hash->buckets[i], &node->list);
+}
+
+void *hash_lookup(hash_t * hash, int key)
+{
+        hashnode_t *node = hash_get_node(hash, key);
+        if (node) {
+                return node->userdata;
+        }
+        return NULL;
+}
+
+void hash_remove(hash_t * hash, int key)
+{
+        hashnode_t *node = hash_get_node(hash, key);
+        if (node) {
+                hash_remove_node(node);
+        }
 }
