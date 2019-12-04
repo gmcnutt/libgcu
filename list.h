@@ -15,88 +15,88 @@
         ((type*)((char*)(ptr)-(unsigned long)(&((type *)0)->field)))
 
 struct list {
-	struct list *next;
-	struct list *prev;
+        struct list *next;
+        struct list *prev;
 };
 
 static inline void list_add_aux(struct list *before, struct list *after,
                                 struct list *between)
 {
-	between->next = after;
-	between->prev = before;
-	before->next = between;
-	after->prev = between;
+        between->next = after;
+        between->prev = before;
+        before->next = between;
+        after->prev = between;
 }
 
 static inline void list_add(struct list *head, struct list *ptr)
 {
-	list_add_aux(head, head->next, ptr);
+        list_add_aux(head, head->next, ptr);
 }
 
 static inline void list_add_tail(struct list *head, struct list *ptr)
 {
-	list_add_aux(head->prev, head, ptr);
+        list_add_aux(head->prev, head, ptr);
 }
 
 static inline void list_remove(struct list *list)
 {
-	list->prev->next = list->next;
-	list->next->prev = list->prev;
-	list_init(list);
+        list->prev->next = list->next;
+        list->next->prev = list->prev;
+        list_init(list);
 }
 
 static inline void list_switch_adjacent(struct list *first, struct list *second)
 {
-	first->prev->next = second;
-	second->prev = first->prev;
-	first->prev = second;
-	first->next = second->next;
-	second->next->prev = first;
-	second->next = first;
+        first->prev->next = second;
+        second->prev = first->prev;
+        first->prev = second;
+        first->next = second->next;
+        second->next->prev = first;
+        second->next = first;
 }
 
 static inline void list_replace(struct list *orig, struct list *repl)
 {
-	if (orig == repl)
-		return;
+        if (orig == repl)
+                return;
 
-	*repl = *orig;
-	orig->next->prev = repl;
-	orig->prev->next = repl;
+        *repl = *orig;
+        orig->next->prev = repl;
+        orig->prev->next = repl;
 }
 
 static inline void list_switch(struct list *e1, struct list *e2)
 {
-	struct list tmp;
+        struct list tmp;
 
-	list_replace(e1, &tmp);
-	list_replace(e2, e1);
-	list_replace(&tmp, e2);
+        list_replace(e1, &tmp);
+        list_replace(e2, e1);
+        list_replace(&tmp, e2);
 }
 
 static inline int list_len(struct list *head)
 {
-	struct list *list = head->next;
-	int n = 0;
-	while (list != head) {
-		list = list->next;
-		n++;
-	}
-	return n;
+        struct list *list = head->next;
+        int n = 0;
+        while (list != head) {
+                list = list->next;
+                n++;
+        }
+        return n;
 }
 
 static inline void list_move(struct list *new_head, struct list *old_head)
 {
-	if (list_empty(old_head)) {
-		list_init(new_head);
-		return;
-	}
+        if (list_empty(old_head)) {
+                list_init(new_head);
+                return;
+        }
 
-	*new_head = *old_head;
-	new_head->next->prev = new_head;
-	new_head->prev->next = new_head;
+        *new_head = *old_head;
+        new_head->next->prev = new_head;
+        new_head->prev->next = new_head;
 
-	list_init(old_head);
+        list_init(old_head);
 }
 
 static inline void list_clear(struct list *head)

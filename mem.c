@@ -38,7 +38,7 @@ void *mem_alloc(int size, void (*finalize) (void *))
 {
         mem_t *chunk = mem_alloc_internal(size, finalize);
         chunk->refcount = 1;
-        return (char *) chunk + sizeof (*chunk);
+        return (char *)chunk + sizeof (*chunk);
 }
 
 

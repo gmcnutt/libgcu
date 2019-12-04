@@ -14,12 +14,12 @@
 typedef struct hash hash_t;
 
 hash_t *hash_alloc(int size);
-void hash_deref(hash_t *hash);
+void hash_deref(hash_t * hash);
 
-int hash_has(hash_t *hash, int key);
-int hash_lookup(hash_t *hash, int key, void **obj);
-int hash_remove(hash_t *hash, int key);
-void hash_clear(hash_t *hash);
-void hash_insert(hash_t *hash, int key, void *obj);
+int hash_has(hash_t * hash, int key);
+int hash_lookup(hash_t * hash, int key, void **obj);
+int hash_remove(hash_t * hash, int key);
+void hash_clear(hash_t * hash);
+void hash_insert(hash_t * hash, int key, void *obj);
 
 #endif
