@@ -99,4 +99,14 @@ static inline void list_move(struct list *new_head, struct list *old_head)
 	list_init(old_head);
 }
 
+static inline void list_clear(struct list *head)
+{
+        struct list *next = head->next;
+        while (next != head) {
+                struct list *cur = next;
+                next = cur->next;
+                list_remove(cur);
+        }
+}
+
 #endif

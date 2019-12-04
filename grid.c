@@ -5,7 +5,11 @@
  */
 
 #include "grid.h"
+#include "hash.h"
 #include "list.h"
+#include "mem.h"
+
+static const float SPARSENESS = 10;  /* Assume 10% occupied. */
 
 typedef struct {
         struct list list;
@@ -14,31 +18,29 @@ typedef struct {
 } node_t;
 
 struct grid {
-        struct list *nodelists;
+        hash_t *nodetable;
 };
 
-grid_t *grid_alloc(int w, int h)
+static void grid_fin(void *ptr)
 {
-        return 0;
+        grid_t *grid = (grid_t*)ptr;
+        hash_deref(grid->nodetable);
+}
+
+grid_t *grid_alloc(int width, int height)
+{
+        grid_t *grid = mem_alloc(sizeof(*grid), grid_fin);
+        grid->nodetable = hash_alloc((width * height) / SPARSENESS);
+        return grid;
 }
 
 void grid_deref(grid_t *grid)
 {
-        
+        mem_deref(grid);
 }
 
-/**
- * Put `obj` at (x, y).
- */
 void grid_put(grid_t *grid, void *userdata, int x, int y);
 
-/**
- * Get `obj` at (x, y). Returns NULL if nothing is there.
- */
 void *grid_get(grid_t *grid, int x, int y);
 
-/**
- * Remove whatever is at (x, y) and return it. Returns NULL if nothing is
- * there.
- */
 void *grid_remove(grid_t *grid, int x, int y);
