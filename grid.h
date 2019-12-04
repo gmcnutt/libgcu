@@ -4,6 +4,9 @@
  * Yes, you can always use a 2d array. But grids are sparse, only using memory
  * for locations that actually have things in them.
  *
+ * Any `userdata` put into a grid will have mem_ref() and mem_deref() called on
+ * it, so it should come from mem_alloc().
+ *
  * Copyright (c) 2019 Gordon McNutt
  */
 
@@ -13,21 +16,20 @@
 typedef struct grid grid_t;
 
 /**
- * Create a grid of the given max dimensions. It will have an initial refcount
- * of 1.
+ * Create a grid of the given max dimensions.
  */
 grid_t *grid_alloc(int width, int height);
 
 /**
- * Ref/deref a grid, destroying it if
+ * Ref/deref a grid.
  */
 void grid_ref(grid_t * grid);
 void grid_deref(grid_t * grid);
 
 /**
- * Put `userdata` (a pointer to anything) at (x, y).
+ * Put `userdata` (a pointer to anything) at (x, y) and ref it.
  */
-void grid_put(grid_t * grid, void *obj, int x, int y);
+void grid_put(grid_t * grid, int x, int y, void *obj);
 
 /**
  * Get whatever is at (x, y). Returns NULL if nothing is there.
@@ -35,9 +37,8 @@ void grid_put(grid_t * grid, void *obj, int x, int y);
 void *grid_get(grid_t * grid, int x, int y);
 
 /**
- * Remove whatever is at (x, y) and return it. Returns NULL if nothing is
- * there.
+ * Remove whatever is at (x, y) and deref it.
  */
-void *grid_remove(grid_t * grid, int x, int y);
+void grid_remove(grid_t * grid, int x, int y);
 
 #endif

@@ -24,13 +24,15 @@ struct grid {
 static void grid_fin(void *ptr)
 {
         grid_t *grid = (grid_t *) ptr;
+
+        /* This will deref all the objects. */
         hash_deref(grid->nodetable);
 }
 
 grid_t *grid_alloc(int width, int height)
 {
         grid_t *grid = mem_alloc(sizeof (*grid), grid_fin);
-        grid->nodetable = hash_alloc((width * height) / SPARSENESS);
+        grid->nodetable = hash_alloc((width * height) / SPARSENESS + 1);
         return grid;
 }
 
@@ -39,8 +41,13 @@ void grid_deref(grid_t * grid)
         mem_deref(grid);
 }
 
-void grid_put(grid_t * grid, void *userdata, int x, int y);
+void grid_put(grid_t * grid, int x, int y, void *userdata)
+{
+        /* The hash table will ref the object. */
+        int key = x * y + 1;
+        hash_insert(grid->nodetable, key, userdata);
+}
 
 void *grid_get(grid_t * grid, int x, int y);
 
-void *grid_remove(grid_t * grid, int x, int y);
+void grid_remove(grid_t * grid, int x, int y);
