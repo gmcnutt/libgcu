@@ -16,7 +16,7 @@ typedef struct grid grid_t;
  * Create a grid of the given max dimensions. It will have an initial refcount
  * of 1.
  */
-grid_t *grid_new(int width, int height);
+grid_t *grid_alloc(int width, int height);
 
 /**
  * Ref/deref a grid, destroying it if

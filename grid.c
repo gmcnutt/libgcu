@@ -4,7 +4,8 @@
  * Copyright (c) 2019 Gordon McNutt
  */
 
-#include <gcu.h>
+#include "grid.h"
+#include "list.h"
 
 typedef struct {
         struct list list;
@@ -16,8 +17,15 @@ struct grid {
         struct list *nodelists;
 };
 
-grid_t *grid_new();
-void grid_deref(grid_t *grid);
+grid_t *grid_alloc(int w, int h)
+{
+        return 0;
+}
+
+void grid_deref(grid_t *grid)
+{
+        
+}
 
 /**
  * Put `obj` at (x, y).

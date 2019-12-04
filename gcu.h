@@ -11,5 +11,6 @@
 #include <log.h>
 #include <mem.h>
 #include <str.h>
+#include <grid.h>
 
 #endif
