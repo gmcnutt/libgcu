@@ -1,6 +1,6 @@
 /* Embedded doubly-linked lists.
  *
- * From-scratch impl inspired by the Linux kernel source's list.h 
+ * From-scratch impl inspired by the Linux kernel source's list.h
  * Copyright (C) 2002 Gordon McNutt
  */
 

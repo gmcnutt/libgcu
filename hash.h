@@ -14,6 +14,8 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+#define hash_empty(h) (hash_len(h) == 0)
+
 typedef struct hash hash_t;
 
 /**
@@ -37,6 +39,11 @@ bool hash_has(hash_t * hash, size_t key);
  * Insert an object at the key, overwriting and derefing any existing object.
  */
 void hash_insert(hash_t * hash, size_t key, void *obj);
+
+/**
+ * Return number of keys in the hash.
+ */
+size_t hash_len(hash_t * hash);
 
 /**
  * Return the object stored at the key iff the key exists else NULL.

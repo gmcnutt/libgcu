@@ -55,10 +55,11 @@ static hashnode_t *hash_get_node(hash_t * hash, size_t key)
         return NULL;
 }
 
-static inline void hash_remove_node(hashnode_t * node)
+static inline void hash_remove_node(hash_t * hash, hashnode_t * node)
 {
         list_remove(&node->list);
         mem_deref(node);
+        hash->len--;
 }
 
 hash_t *hash_alloc(size_t size)
@@ -85,7 +86,7 @@ void hash_clear(hash_t * hash)
                 while (next != head) {
                         hashnode_t *node = (hashnode_t *) next;
                         next = next->next;
-                        hash_remove_node(node);
+                        hash_remove_node(hash, node);
                 }
         }
 }
@@ -95,6 +96,17 @@ void hash_insert(hash_t * hash, size_t key, void *userdata)
         size_t i = key % hash->n_buckets;
         hashnode_t *node = hashnode_alloc(userdata, key);
         list_add(&hash->buckets[i], &node->list);
+        hash->len++;
+}
+
+bool hash_has(hash_t * hash, size_t key)
+{
+        return hash_get_node(hash, key) != NULL;
+}
+
+size_t hash_len(hash_t * hash)
+{
+        return hash->len;
 }
 
 void *hash_lookup(hash_t * hash, size_t key)
@@ -110,6 +122,6 @@ void hash_remove(hash_t * hash, size_t key)
 {
         hashnode_t *node = hash_get_node(hash, key);
         if (node) {
-                hash_remove_node(node);
+                hash_remove_node(hash, node);
         }
 }
