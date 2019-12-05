@@ -11,7 +11,7 @@ char *str_printf(const char *fmt, ...)
 {
         va_list argp;
         char c, *str;
-        int len;
+        size_t len;
 
         /* Probe the length using vsnprintf, knowing it will return the number
          * of chars it failed to write. */

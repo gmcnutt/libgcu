@@ -11,6 +11,9 @@
 #ifndef hash_h
 #define hash_h
 
+#include <stddef.h>
+#include <stdbool.h>
+
 typedef struct hash hash_t;
 
 /**
@@ -18,8 +21,7 @@ typedef struct hash hash_t;
  * use when empty. Lookups and insertions will be proportional to n_keys/size
  * if your keys are evenly distributed. Use mem_deref() to destroy.
  */
-hash_t *hash_alloc(int size);
-
+hash_t *hash_alloc(size_t size);
 
 /**
  * Remove all keys and deref all userdata.
@@ -29,21 +31,21 @@ void hash_clear(hash_t * hash);
 /**
  * Return non-zero iff the key exists.
  */
-int hash_has(hash_t * hash, int key);
+bool hash_has(hash_t * hash, size_t key);
 
 /**
  * Insert an object at the key, overwriting and derefing any existing object.
  */
-void hash_insert(hash_t * hash, int key, void *obj);
+void hash_insert(hash_t * hash, size_t key, void *obj);
 
 /**
  * Return the object stored at the key iff the key exists else NULL.
  */
-void *hash_lookup(hash_t * hash, int key);
+void *hash_lookup(hash_t * hash, size_t key);
 
 /**
  * Remove a key and deref its userdata iff the key exists.
  */
-void hash_remove(hash_t * hash, int key);
+void hash_remove(hash_t * hash, size_t key);
 
 #endif

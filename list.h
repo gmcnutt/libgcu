@@ -7,6 +7,8 @@
 #ifndef list_h
 #define list_h
 
+#include <stddef.h>
+
 #define list_for_each(head, ptr) \
         for ((ptr) = (head)->next; (ptr) != (head); (ptr) = (ptr)->next)
 #define list_init(list) { (list)->next = (list); (list)->prev = (list); }
@@ -74,10 +76,10 @@ static inline void list_switch(struct list *e1, struct list *e2)
         list_replace(&tmp, e2);
 }
 
-static inline int list_len(struct list *head)
+static inline size_t list_len(struct list *head)
 {
         struct list *list = head->next;
-        int n = 0;
+        size_t n = 0;
         while (list != head) {
                 list = list->next;
                 n++;

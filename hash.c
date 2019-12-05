@@ -4,8 +4,6 @@
  * Copyright (c) 2019 Gordon McNutt
  */
 
-#include <stddef.h>
-
 #include "hash.h"
 #include "list.h"
 #include "mem.h"
@@ -13,13 +11,13 @@
 typedef struct {
         struct list list;
         void *userdata;
-        int key;
+        size_t key;
 } hashnode_t;
 
 struct hash {
         struct list *buckets;
-        int n_buckets;
-        int userefs;
+        size_t n_buckets;
+        size_t len;
 };
 
 static void hash_fin(void *ptr)
@@ -35,7 +33,7 @@ static void hashnode_fin(void *ptr)
         mem_deref(node->userdata);
 }
 
-static hashnode_t *hashnode_alloc(void *userdata, int key)
+static hashnode_t *hashnode_alloc(void *userdata, size_t key)
 {
         hashnode_t *node = mem_alloc(sizeof (*node), hashnode_fin);
         node->userdata = userdata;
@@ -44,9 +42,9 @@ static hashnode_t *hashnode_alloc(void *userdata, int key)
         return node;
 }
 
-static hashnode_t *hash_get_node(hash_t * hash, int key)
+static hashnode_t *hash_get_node(hash_t * hash, size_t key)
 {
-        int i = key % hash->n_buckets;
+        size_t i = key % hash->n_buckets;
         struct list *elem;
         list_for_each(&hash->buckets[i], elem) {
                 hashnode_t *node = (hashnode_t *) elem;
@@ -63,12 +61,12 @@ static inline void hash_remove_node(hashnode_t * node)
         mem_deref(node);
 }
 
-hash_t *hash_alloc(int size)
+hash_t *hash_alloc(size_t size)
 {
         hash_t *hash = mem_alloc(sizeof (*hash), hash_fin);
         hash->buckets = mem_alloc(sizeof (struct list) * size, NULL);
         hash->n_buckets = size;
-        for (int i = 0; i < size; i++) {
+        for (size_t i = 0; i < size; i++) {
                 list_init(&hash->buckets[i]);
         }
         return hash;
@@ -81,7 +79,7 @@ void hash_deref(hash_t * hash)
 
 void hash_clear(hash_t * hash)
 {
-        for (int i = 0; i < hash->n_buckets; i++) {
+        for (size_t i = 0; i < hash->n_buckets; i++) {
                 struct list *head = &hash->buckets[i];
                 struct list *next = head->next;
                 while (next != head) {
@@ -92,14 +90,14 @@ void hash_clear(hash_t * hash)
         }
 }
 
-void hash_insert(hash_t * hash, int key, void *userdata)
+void hash_insert(hash_t * hash, size_t key, void *userdata)
 {
-        int i = key % hash->n_buckets;
+        size_t i = key % hash->n_buckets;
         hashnode_t *node = hashnode_alloc(userdata, key);
         list_add(&hash->buckets[i], &node->list);
 }
 
-void *hash_lookup(hash_t * hash, int key)
+void *hash_lookup(hash_t * hash, size_t key)
 {
         hashnode_t *node = hash_get_node(hash, key);
         if (node) {
@@ -108,7 +106,7 @@ void *hash_lookup(hash_t * hash, int key)
         return NULL;
 }
 
-void hash_remove(hash_t * hash, int key)
+void hash_remove(hash_t * hash, size_t key)
 {
         hashnode_t *node = hash_get_node(hash, key);
         if (node) {

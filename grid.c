@@ -4,7 +4,6 @@
  * Copyright (c) 2019 Gordon McNutt
  */
 
-#include <stddef.h>
 #include "grid.h"
 #include "hash.h"
 #include "list.h"
@@ -20,7 +19,7 @@ static const float SPARSENESS = 10;     /* Assume 10% occupied. */
 typedef struct {
         struct list list;
         void *userdata;
-        int x, y;
+        size_t x, y;
 } node_t;
 
 struct grid {
@@ -34,24 +33,24 @@ static void grid_fin(void *ptr)
         mem_deref(grid->nodetable);
 }
 
-grid_t *grid_alloc(int width, int height)
+grid_t *grid_alloc(size_t width, size_t height)
 {
         grid_t *grid = mem_alloc(sizeof (*grid), grid_fin);
         grid->nodetable = hash_alloc((width * height) / SPARSENESS + 1);
         return grid;
 }
 
-void grid_put(grid_t * grid, int x, int y, void *userdata)
+void grid_put(grid_t * grid, size_t x, size_t y, void *userdata)
 {
         hash_insert(grid->nodetable, HASH(x, y), userdata);
 }
 
-void *grid_get(grid_t * grid, int x, int y)
+void *grid_get(grid_t * grid, size_t x, size_t y)
 {
         return hash_lookup(grid->nodetable, HASH(x, y));
 }
 
-void grid_remove(grid_t * grid, int x, int y)
+void grid_remove(grid_t * grid, size_t x, size_t y)
 {
         hash_remove(grid->nodetable, HASH(x, y));
 }

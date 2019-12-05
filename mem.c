@@ -10,15 +10,15 @@
 static int _errno = 0;
 
 typedef struct {
-        unsigned int refcount;
+        size_t refcount;
         void (*finalize) (void *ptr);
 } mem_t;
 
 
-static void (*mem_err_handler) (int size) = NULL;
+static void (*mem_err_handler) (size_t size) = NULL;
 
 
-static mem_t *mem_alloc_internal(int size, void (*finalize) (void *))
+static mem_t *mem_alloc_internal(size_t size, void (*finalize) (void *))
 {
         _errno = 0;
         mem_t *chunk = (mem_t *) calloc(1, sizeof (*chunk) + size);
@@ -34,7 +34,7 @@ static mem_t *mem_alloc_internal(int size, void (*finalize) (void *))
 }
 
 
-void *mem_alloc(int size, void (*finalize) (void *))
+void *mem_alloc(size_t size, void (*finalize) (void *))
 {
         mem_t *chunk = mem_alloc_internal(size, finalize);
         chunk->refcount = 1;
@@ -62,13 +62,13 @@ void mem_deref(void *ptr)
 }
 
 
-void mem_set_err_handler(void (*handler) (int size))
+void mem_set_err_handler(void (*handler) (size_t size))
 {
         mem_err_handler = handler;
 }
 
 
-unsigned int mem_get_refs(void *ptr)
+size_t mem_get_refs(void *ptr)
 {
         mem_t *chunk = (mem_t *) ptr - 1;
         return chunk->refcount;

@@ -8,9 +8,10 @@
 #ifndef gcu_h
 #define gcu_h
 
+#include <grid.h>
+#include <hash.h>
 #include <log.h>
 #include <mem.h>
 #include <str.h>
-#include <grid.h>
 
 #endif
