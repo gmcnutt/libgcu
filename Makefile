@@ -5,6 +5,7 @@ incdir := $(installdir)/include
 sources := $(wildcard *.c)
 hdrs := $(wildcard *.h)
 objects = $(sources:.c=.o)
+testsrc := test/test.c
 CFLAGS := -Werror -Wfatal-errors -std=c99
 
 # Auto-generate .h dependency rules
@@ -37,10 +38,12 @@ clean:
 	rm -f $(lib) $(objects) *.gcov *.gcda *.gcno *.d
 	$(MAKE) -C test clean
 
-indent: $(sources) $(hdrs)
+indent: $(sources) $(hdrs) $(testsrc)
 	indent -linux $^
+	sed -i 's/[ \t]*$$//' $^
 
-runtest: $(objects)
+
+runtest: $(objects) $(testsrc)
 	$(MAKE) -C test
 	valgrind ./test/test
 
