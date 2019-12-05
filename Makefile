@@ -5,8 +5,7 @@ incdir := $(installdir)/include
 sources := $(wildcard *.c)
 hdrs := $(wildcard *.h)
 objects = $(sources:.c=.o)
-CFLAGS += -Werror -Wfatal-errors
-CFLAGS += -std=c99
+CFLAGS := -Werror -Wfatal-errors -std=c99
 
 # Auto-generate .h dependency rules
 CFLAGS += -MD -MP
@@ -17,7 +16,7 @@ CFLAGS += -shared -fPIC
 ifeq ($(OPTIMIZE), true)
 	CFLAGS += -O2
 else
-	CFLAGS += -Wall -g
+	CFLAGS += -Wall -g -O0 -fprofile-arcs -ftest-coverage
 endif
 
 .PHONY: clean indent all
@@ -32,10 +31,10 @@ install: $(lib) $(libdir) $(incdir)
 	cp $(hdrs) $(incdir)
 
 $(lib): $(objects) Makefile
-	$(CC) $(CFLAGS) -o $@ $(objects) -Wl,-rpath=/usr/local/lib
+	$(CC) $(CFLAGS) $(LIBCFLAGS) -o $@ $(objects) -Wl,-rpath=/usr/local/lib
 
 clean:
-	rm -f $(lib) $(objects)
+	rm -f $(lib) $(objects) *.gcov *.gcda *.gcno *.d
 
 indent: $(sources) $(hdrs)
 	indent -linux $^
