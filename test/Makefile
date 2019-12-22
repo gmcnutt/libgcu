@@ -6,6 +6,7 @@ CFLAGS = -Wall -g -std=c99
 CFLAGS += -I ../
 CFLAGS += -Werror -Wfatal-errors
 CFLAGS += -fprofile-arcs -ftest-coverage
+LDLIBS += -lm
 
 all: $(program)
 

@@ -35,7 +35,26 @@ int main(int argc, char **argv)
         assert(grid_get(grid, 0, 0) == NULL);
 
         mem_deref(grid);
-        mem_deref(str);
 
+        octree_t *root = octree_alloc();
+        octree_set_depth(root, 3);
+        v3_t c1 = {1, 1, 2};
+        assert(octree_insert(root, c1, str));
+        octree_printf(root, 0);
+        assert(octree_lookup(root, c1, &ptr));
+        assert(ptr==str);
+
+        v3_t c2 = {-1, -1, -2};
+        octree_insert(root, c2, str);
+        octree_printf(root, 0);
+        assert(octree_lookup(root, c2, &ptr));
+        assert(ptr==str);
+        
+
+        
+        mem_deref(root);
+
+        mem_deref(str);
+        
         return 0;
 }

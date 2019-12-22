@@ -15,6 +15,8 @@
 
 #include <stddef.h>
 
+#define grid_has(g, x, y) (grid_get((g), (x), (y)) != NULL)
+
 typedef struct grid grid_t;
 
 /**

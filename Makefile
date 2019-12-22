@@ -7,6 +7,7 @@ hdrs := $(wildcard *.h)
 objects = $(sources:.c=.o)
 testsrc := test/test.c
 CFLAGS := -Werror -Wfatal-errors -std=c99
+LDFLAGS += -lm
 
 # Auto-generate .h dependency rules
 CFLAGS += -MD -MP
@@ -22,7 +23,7 @@ endif
 
 .PHONY: clean indent all runtest
 
-all: $(lib) runtest
+all: $(lib)
 
 $(libdir) $(incdir):
 	mkdir -p $@
@@ -32,7 +33,7 @@ install: $(lib) $(libdir) $(incdir)
 	cp $(hdrs) $(incdir)
 
 $(lib): $(objects) Makefile
-	$(CC) $(CFLAGS) $(LIBCFLAGS) -o $@ $(objects) -Wl,-rpath=/usr/local/lib
+	$(CC) $(CFLAGS) $(LIBCFLAGS) -o $@ $(objects) $(LDFLAGS) -Wl,-rpath=/usr/local/lib
 
 clean:
 	rm -f $(lib) $(objects) *.gcov *.gcda *.gcno *.d

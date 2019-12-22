@@ -12,6 +12,7 @@
 #include <hash.h>
 #include <log.h>
 #include <mem.h>
+#include <octree.h>
 #include <str.h>
 
 #endif
